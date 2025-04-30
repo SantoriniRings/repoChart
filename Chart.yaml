@@ -1,0 +1,12 @@
+apiVersion: v2
+name: integrador-chart
+description: A Helm chart para la app denl integrador hecha en DJango
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+
+dependencies:
+  - name: postgresql
+    version: "16.6.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postrgesql.enabled
