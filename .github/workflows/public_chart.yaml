@@ -16,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # Necesitamos hacer checkout de la rama donde desarrollas y de la rama charts
+          # Necesitamos hacer checkout de la rama donde desarrollas y de la rama gh-pages
           fetch-depth: 0 # Necesario para trabajar con múltiples ramas
 
       - name: Setup Helm
@@ -34,29 +34,29 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Checkout charts branch
+      - name: Checkout gh-pages branch
         run: |
-          # Clona la rama charts en una carpeta separada.
+          # Clona la rama gh-pages en una carpeta separada.
           # Ya la creamos manualmente antes, pero este comando también funciona.
-          git checkout charts
+          git checkout gh-pages
 
       - name: Move packaged chart
         run: |
-          # Mueve el archivo .tgz generado a la rama charts
+          # Mueve el archivo .tgz generado a la rama gh-pages
           # El archivo .tgz estará en el directorio raíz después del 'helm package'
           mv ../*.tgz .
 
       - name: Update chart index
         run: |
           # Actualiza el archivo index.yaml
-          # '.': busca charts en el directorio actual (la rama charts)
-          # '--url': La URL base de tu repositorio de charts en GitHub Pages
+          # '.': busca gh-pages en el directorio actual (la rama gh-pages)
+          # '--url': La URL base de tu repositorio de gh-pages en GitHub Pages
           # ${{ github.repository_owner }} será tu usuario o organización
-          # ${{ github.event.repository.name }} será el nombre de este nuevo repositorio de charts
+          # ${{ github.event.repository.name }} será el nombre de este nuevo repositorio de gh-pages
           helm repo index . --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
 
       - name: Commit and push changes
         run: |
           git add .
           git commit -m "Publish Helm chart ${{ github.sha }}" || echo "No changes to commit"
-          git push origin charts
+          git push origin gh-pages
