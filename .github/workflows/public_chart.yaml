@@ -44,7 +44,7 @@ jobs:
         run: |
           # Mueve el archivo .tgz generado a la rama gh-pages
           # El archivo .tgz estará en el directorio raíz después del 'helm package'
-          mv ../*.tgz .
+          mv ${{ github.workspace }}/*.tgz .
 
       - name: Update chart index
         run: |
