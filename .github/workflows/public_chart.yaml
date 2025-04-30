@@ -4,7 +4,7 @@ on:
   push:
     branches:
       # Cambia 'main' por la rama donde desarrollas tu chart si no es main
-      - main
+      - master
     # Opcional: si tu chart no está en la raíz, especifica la ruta
     # paths:
     #   - 'tu-aplicacion/**'
