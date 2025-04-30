@@ -27,7 +27,7 @@ jobs:
       - name: Package Helm chart
         run: |
           # Empaqueta tu chart. Asegúrate de que la ruta sea correcta.
-          helm package ./integrador-chart # <-- ¡Ajusta esta ruta si tu chart no está en la raíz!
+          helm package . # <-- ¡Ajusta esta ruta si tu chart no está en la raíz!
 
       - name: Configure Git
         run: |
