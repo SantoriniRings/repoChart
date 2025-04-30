@@ -9,6 +9,9 @@ on:
     # paths:
     #   - 'tu-aplicacion/**'
 
+permissions: # <-- Añade este bloque
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
