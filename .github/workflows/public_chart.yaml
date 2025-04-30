@@ -40,11 +40,6 @@ jobs:
           # Ya la creamos manualmente antes, pero este comando también funciona.
           git checkout gh-pages
 
-      - name: Move packaged chart
-        run: |
-          # Mueve el archivo .tgz generado a la rama gh-pages
-          # El archivo .tgz estará en el directorio raíz después del 'helm package'
-          mv ${{ github.workspace }}/*.tgz .
 
       - name: Update chart index
         run: |
