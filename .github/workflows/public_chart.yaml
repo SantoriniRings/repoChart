@@ -1,0 +1,62 @@
+name: Publish Helm Chart to GitHub Pages
+
+on:
+  push:
+    branches:
+      # Cambia 'main' por la rama donde desarrollas tu chart si no es main
+      - main
+    # Opcional: si tu chart no está en la raíz, especifica la ruta
+    # paths:
+    #   - 'tu-aplicacion/**'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Necesitamos hacer checkout de la rama donde desarrollas y de la rama charts
+          fetch-depth: 0 # Necesario para trabajar con múltiples ramas
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.9.0 # Puedes ajustar la versión de Helm si lo necesitas
+
+      - name: Package Helm chart
+        run: |
+          # Empaqueta tu chart. Asegúrate de que la ruta sea correcta.
+          helm package ./integrador-chart # <-- ¡Ajusta esta ruta si tu chart no está en la raíz!
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Checkout charts branch
+        run: |
+          # Clona la rama charts en una carpeta separada.
+          # Ya la creamos manualmente antes, pero este comando también funciona.
+          git checkout charts
+
+      - name: Move packaged chart
+        run: |
+          # Mueve el archivo .tgz generado a la rama charts
+          # El archivo .tgz estará en el directorio raíz después del 'helm package'
+          mv ../*.tgz .
+
+      - name: Update chart index
+        run: |
+          # Actualiza el archivo index.yaml
+          # '.': busca charts en el directorio actual (la rama charts)
+          # '--url': La URL base de tu repositorio de charts en GitHub Pages
+          # ${{ github.repository_owner }} será tu usuario o organización
+          # ${{ github.event.repository.name }} será el nombre de este nuevo repositorio de charts
+          helm repo index . --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "Publish Helm chart ${{ github.sha }}" || echo "No changes to commit"
+          git push origin charts
